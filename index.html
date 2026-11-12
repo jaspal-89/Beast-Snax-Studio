@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101114">
+  <meta name="description" content="Beast Snax Studio — YouTube Shorts review and publishing dashboard.">
+  <title>Beast Snax Studio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script defer src="app.js"></script>
+</head>
+<body>
+  <div class="shell">
+    <aside class="sidebar">
+      <a class="brand" href="#"><span class="brand-mark">B</span><span>BEAST <b>SNAX</b><small>STUDIO</small></span></a>
+      <div class="side-label">WORKSPACE</div>
+      <a class="nav active" href="#queue"><span>▦</span> Content queue</a>
+      <a class="nav" href="#settings"><span>⚙</span> Setup & connection</a>
+      <div class="sidebar-bottom"><span class="status-dot"></span><span id="connection-label">Not connected</span></div>
+    </aside>
+    <main class="main">
+      <header class="topbar">
+        <div><div class="eyebrow">YOUTUBE SHORTS WORKSPACE</div><h1>Content queue</h1></div>
+        <div class="top-actions"><span class="live-pill"><i></i> DAILY PUBLISHER</span><button id="refresh-btn" class="button button-quiet" type="button">↻ Refresh</button></div>
+      </header>
+      <section id="settings" class="panel setup-panel">
+        <div class="panel-heading"><div><div class="eyebrow">ONE-TIME SETUP</div><h2>Connect your workspace</h2></div><span class="step-tag">SUPABASE</span></div>
+        <p class="muted">Enter your Supabase Project URL and public anon key. Never enter your service-role key here.</p>
+        <form id="config-form" class="config-grid">
+          <label>Project URL<input id="supabase-url" type="url" placeholder="https://your-project.supabase.co" required></label>
+          <label>Anon / publishable key<input id="supabase-key" type="password" placeholder="Paste your public anon key" required></label>
+          <button class="button button-primary config-submit" type="submit">Connect</button>
+        </form>
+        <div id="auth-area" class="auth-area" hidden>
+          <div class="divider"></div>
+          <div class="auth-heading"><div><h3>Dashboard login</h3><p class="muted">Sign in with the account you created in Supabase.</p></div><span id="user-label" class="user-label"></span></div>
+          <form id="auth-form" class="auth-grid">
+            <label>Email<input id="auth-email" type="email" autocomplete="email" required placeholder="you@example.com"></label>
+            <label>Password<input id="auth-password" type="password" autocomplete="current-password" required minlength="8" placeholder="Your password"></label>
+            <div class="auth-buttons"><button class="button button-primary" id="signin-btn" type="submit">Sign in</button><button class="button button-quiet" id="signup-btn" type="button">Create account</button><button class="button button-quiet" id="signout-btn" type="button" hidden>Sign out</button></div>
+          </form>
+          <p class="tiny muted">After creating your account, copy its User ID from Supabase → Authentication → Users into GitHub secret SUPABASE_OWNER_USER_ID.</p>
+        </div>
+        <div id="config-message" class="message" role="status"></div>
+      </section>
+      <section id="queue" class="stats-grid">
+        <article class="stat-card"><span class="stat-label">TOTAL SHORTS</span><strong id="stat-total">—</strong><span class="stat-foot">In your queue</span></article>
+        <article class="stat-card"><span class="stat-label">NEEDS REVIEW</span><strong id="stat-pending">—</strong><span class="stat-foot">Awaiting approval</span></article>
+        <article class="stat-card"><span class="stat-label">APPROVED</span><strong id="stat-approved">—</strong><span class="stat-foot">Ready to publish</span></article>
+        <article class="stat-card"><span class="stat-label">PUBLISHED / SCHEDULED</span><strong id="stat-done">—</strong><span class="stat-foot">Sent to YouTube</span></article>
+      </section>
+      <section class="queue-section">
+        <div class="queue-heading"><div><div class="eyebrow">YOUR LIBRARY</div><h2>Shorts to review</h2></div><div class="filters"><select id="status-filter" aria-label="Filter by status"><option value="all">All statuses</option><option value="pending">Needs review</option><option value="approved">Approved</option><option value="scheduled">Scheduled</option><option value="published">Published</option><option value="rejected">Rejected</option><option value="error">Errors</option></select></div></div>
+        <div id="queue-list" class="queue-list"><div class="empty-state"><div class="empty-icon">▣</div><h3>Connect your workspace to load videos</h3><p>New MP4s from Google Drive will appear here after the daily scanner runs.</p></div></div>
+      </section>
+      <footer>BEAST SNAX STUDIO <span>·</span> YOUR CONTENT. YOUR SCHEDULE.</footer>
+    </main>
+  </div>
+  <template id="video-card-template">
+    <article class="video-card">
+      <div class="video-top"><div class="video-symbol">▶</div><div class="video-main"><div class="video-filename"></div><div class="video-meta"></div></div><span class="status-badge"></span></div>
+      <div class="video-fields">
+        <label>Video title<input class="field-title" maxlength="100"></label>
+        <label>Description<textarea class="field-description" rows="3" maxlength="5000"></textarea></label>
+        <label>Tags <span class="tiny muted">(comma-separated)</span><input class="field-tags" placeholder="challenge, shorts"></label>
+      </div>
+      <div class="video-bottom"><span class="video-result"></span><div class="card-actions"><button class="button button-quiet reject-btn" type="button">Reject</button><button class="button button-primary approve-btn" type="button">Approve for upload</button></div></div>
+    </article>
+  </template>
+</body>
+</html>
